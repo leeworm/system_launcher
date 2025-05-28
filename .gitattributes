@@ -1,0 +1,5 @@
+# 모든 텍스트 파일을 자동으로 정규화
+* text=auto
+
+# C# 파일은 LF로 통일
+*.cs text eol=lf
