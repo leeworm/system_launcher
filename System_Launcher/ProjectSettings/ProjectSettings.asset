@@ -805,7 +805,8 @@ PlayerSettings:
   webGLWebAssemblyBigInt: 0
   webGLCloseOnQuit: 0
   webWasm2023: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: DEV_VER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
@@ -826,8 +827,8 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: System_Launcher
-  metroPackageVersion: 
+  metroPackageName: SystemLauncher
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -835,7 +836,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: System_Launcher
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: System_Launcher
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
