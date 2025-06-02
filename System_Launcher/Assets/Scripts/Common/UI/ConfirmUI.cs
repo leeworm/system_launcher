@@ -1,62 +1,69 @@
-ï»¿using System; // System ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì‚¬ìš©
-using TMPro; // TextMeshPro ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì‚¬ìš©
-using UnityEngine.UI; // Unity UI ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì‚¬ìš©
+using System; // System ³×ÀÓ½ºÆäÀÌ½º »ç¿ë
+using TMPro; // TextMeshPro ³×ÀÓ½ºÆäÀÌ½º »ç¿ë
+using UnityEngine.UI; // Unity UI ³×ÀÓ½ºÆäÀÌ½º »ç¿ë
 
-public enum ConfirmType // í™•ì¸ì°½ íƒ€ì… ì—´ê±°í˜•
+public enum ConfirmType // È®ÀÎÃ¢ Å¸ÀÔ ¿­°ÅÇü
 {
-    OK, // í™•ì¸ ë²„íŠ¼ë§Œ ìˆëŠ” íƒ€ì…
-    OK_CANCEL // í™•ì¸ê³¼ ì·¨ì†Œ ë²„íŠ¼ì´ ëª¨ë‘ ìˆëŠ” íƒ€ì…
+    OK, // È®ÀÎ ¹öÆ°¸¸ ÀÖ´Â Å¸ÀÔ
+    OK_CANCEL // È®ÀÎ°ú Ãë¼Ò ¹öÆ°ÀÌ ¸ğµÎ ÀÖ´Â Å¸ÀÔ
 }
 
-public class ConfirmUIData : BaseUIData // BaseUIDataë¥¼ ìƒì†ë°›ëŠ” í™•ì¸ì°½ UI ë°ì´í„° í´ë˜ìŠ¤
+public class ConfirmUIData : BaseUIData // BaseUIData¸¦ »ó¼Ó¹Ş´Â È®ÀÎÃ¢ UI µ¥ÀÌÅÍ Å¬·¡½º
 {
-    public ConfirmType ConfirmType; // í™•ì¸ì°½ íƒ€ì…
-    public string TitleTxt; // ì œëª© í…ìŠ¤íŠ¸
-    public string DescTxt; // ì„¤ëª… í…ìŠ¤íŠ¸
-    public string OKBtnTxt; // í™•ì¸ ë²„íŠ¼ í…ìŠ¤íŠ¸
-    public Action OnClickOKBtn; // í™•ì¸ ë²„íŠ¼ í´ë¦­ ì‹œ ì‹¤í–‰í•  ì•¡ì…˜
-    public string CancelBtnTxt; // ì·¨ì†Œ ë²„íŠ¼ í…ìŠ¤íŠ¸
-    public Action OnClickCancelBtn; // ì·¨ì†Œ ë²„íŠ¼ í´ë¦­ ì‹œ ì‹¤í–‰í•  ì•¡ì…˜
+    public ConfirmType ConfirmType; // È®ÀÎÃ¢ Å¸ÀÔ
+    public string TitleTxt; // Á¦¸ñ ÅØ½ºÆ®
+    public string DescTxt; // ¼³¸í ÅØ½ºÆ®
+    public string OKBtnTxt; // È®ÀÎ ¹öÆ° ÅØ½ºÆ®
+    public Action OnClickOKBtn; // È®ÀÎ ¹öÆ° Å¬¸¯ ½Ã ½ÇÇàÇÒ ¾×¼Ç
+    public string CancelBtnTxt; // Ãë¼Ò ¹öÆ° ÅØ½ºÆ®
+    public Action OnClickCancelBtn; // Ãë¼Ò ¹öÆ° Å¬¸¯ ½Ã ½ÇÇàÇÒ ¾×¼Ç
 }
 
-public class ConfirmUI : BaseUI
-{
-    public TextMeshProUGUI TitleTxt = null; // ì œëª© í…ìŠ¤íŠ¸ UI ì»´í¬ë„ŒíŠ¸
-    public TextMeshProUGUI DescTxt = null; // ì„¤ëª… í…ìŠ¤íŠ¸ UI ì»´í¬ë„ŒíŠ¸
-    public Button OKBtn = null; // í™•ì¸ ë²„íŠ¼ UI ì»´í¬ë„ŒíŠ¸
-    public Button CancelBtn = null; // ì·¨ì†Œ ë²„íŠ¼ UI ì»´í¬ë„ŒíŠ¸
-    public TextMeshProUGUI OKBtnTxt = null; // í™•ì¸ ë²„íŠ¼ í…ìŠ¤íŠ¸ UI ì»´í¬ë„ŒíŠ¸
-    public TextMeshProUGUI CancelBtnTxt = null; // ì·¨ì†Œ ë²„íŠ¼ í…ìŠ¤íŠ¸ UI ì»´í¬ë„ŒíŠ¸
 
-    private ConfirmUIData m_ConfirmUIData = null; // í™•ì¸ì°½ UI ë°ì´í„° ì €ì¥ ë³€ìˆ˜
-    private Action m_OnClickOKBtn = null; // í™•ì¸ ë²„íŠ¼ í´ë¦­ ì•¡ì…˜ ì €ì¥ ë³€ìˆ˜
-    private Action m_OnClickCancelBtn = null; // ì·¨ì†Œ ë²„íŠ¼ í´ë¦­ ì•¡ì…˜ ì €ì¥ ë³€ìˆ˜
-    public override void SetInfo(BaseUIData uiData) // UI ì •ë³´ ì„¤ì • ë©”ì„œë“œ ì˜¤ë²„ë¼ì´ë“œ
+
+
+public class ConfirmUI : BaseUI // BaseUI¸¦ »ó¼Ó¹Ş´Â È®ÀÎÃ¢ UI Å¬·¡½º
+{
+    public TextMeshProUGUI TitleTxt = null; // Á¦¸ñ ÅØ½ºÆ® UI ÄÄÆ÷³ÍÆ®
+    public TextMeshProUGUI DescTxt = null; // ¼³¸í ÅØ½ºÆ® UI ÄÄÆ÷³ÍÆ®
+    public Button OKBtn = null; // È®ÀÎ ¹öÆ° UI ÄÄÆ÷³ÍÆ®
+    public Button CancelBtn = null; // Ãë¼Ò ¹öÆ° UI ÄÄÆ÷³ÍÆ®
+    public TextMeshProUGUI OKBtnTxt = null; // È®ÀÎ ¹öÆ° ÅØ½ºÆ® UI ÄÄÆ÷³ÍÆ®
+    public TextMeshProUGUI CancelBtnTxt = null; // Ãë¼Ò ¹öÆ° ÅØ½ºÆ® UI ÄÄÆ÷³ÍÆ®
+
+    private ConfirmUIData m_ConfirmUIData = null; // È®ÀÎÃ¢ UI µ¥ÀÌÅÍ ÀúÀå º¯¼ö
+    private Action m_OnClickOKBtn = null; // È®ÀÎ ¹öÆ° Å¬¸¯ ¾×¼Ç ÀúÀå º¯¼ö
+    private Action m_OnClickCancelBtn = null; // Ãë¼Ò ¹öÆ° Å¬¸¯ ¾×¼Ç ÀúÀå º¯¼ö
+
+
+    public override void SetInfo(BaseUIData uiData) // UI Á¤º¸ ¼³Á¤ ¸Ş¼­µå ¿À¹ö¶óÀÌµå
     {
-        base.SetInfo(uiData); // ë¶€ëª¨ í´ë˜ìŠ¤ì˜ SetInfo í˜¸ì¶œ
+        base.SetInfo(uiData); // ºÎ¸ğ Å¬·¡½ºÀÇ SetInfo È£Ãâ
 
-        m_ConfirmUIData = uiData as ConfirmUIData; // BaseUIDataë¥¼ ConfirmUIDataë¡œ ìºìŠ¤íŒ…
+        m_ConfirmUIData = uiData as ConfirmUIData; // BaseUIData¸¦ ConfirmUIData·Î Ä³½ºÆÃ
 
-        TitleTxt.text = m_ConfirmUIData.TitleTxt; // ì œëª© í…ìŠ¤íŠ¸ ì„¤ì •
-        DescTxt.text = m_ConfirmUIData.DescTxt; // ì„¤ëª… í…ìŠ¤íŠ¸ ì„¤ì •
-        OKBtnTxt.text = m_ConfirmUIData.OKBtnTxt; // í™•ì¸ ë²„íŠ¼ í…ìŠ¤íŠ¸ ì„¤ì •
-        m_OnClickOKBtn = m_ConfirmUIData.OnClickOKBtn; // í™•ì¸ ë²„íŠ¼ í´ë¦­ ì•¡ì…˜ ì„¤ì •
-        CancelBtnTxt.text = m_ConfirmUIData.CancelBtnTxt; // ì·¨ì†Œ ë²„íŠ¼ í…ìŠ¤íŠ¸ ì„¤ì •
-        m_OnClickCancelBtn = m_ConfirmUIData.OnClickCancelBtn; // ì·¨ì†Œ ë²„íŠ¼ í´ë¦­ ì•¡ì…˜ ì„¤ì •
+        TitleTxt.text = m_ConfirmUIData.TitleTxt; // Á¦¸ñ ÅØ½ºÆ® ¼³Á¤
+        DescTxt.text = m_ConfirmUIData.DescTxt; // ¼³¸í ÅØ½ºÆ® ¼³Á¤
+        OKBtnTxt.text = m_ConfirmUIData.OKBtnTxt; // È®ÀÎ ¹öÆ° ÅØ½ºÆ® ¼³Á¤
+        m_OnClickOKBtn = m_ConfirmUIData.OnClickOKBtn; // È®ÀÎ ¹öÆ° Å¬¸¯ ¾×¼Ç ¼³Á¤
+        CancelBtnTxt.text = m_ConfirmUIData.CancelBtnTxt; // Ãë¼Ò ¹öÆ° ÅØ½ºÆ® ¼³Á¤
+        m_OnClickCancelBtn = m_ConfirmUIData.OnClickCancelBtn; // Ãë¼Ò ¹öÆ° Å¬¸¯ ¾×¼Ç ¼³Á¤
 
-        OKBtn.gameObject.SetActive(true); // í™•ì¸ ë²„íŠ¼ í™œì„±í™”
-        // í™•ì¸ì°½ íƒ€ì…ì´ OK_CANCELì¸ ê²½ìš°ì—ë§Œ ì·¨ì†Œ ë²„íŠ¼ í™œì„±í™”
+        OKBtn.gameObject.SetActive(true); // È®ÀÎ ¹öÆ° È°¼ºÈ­
+        // È®ÀÎÃ¢ Å¸ÀÔÀÌ OK_CANCELÀÎ °æ¿ì¿¡¸¸ Ãë¼Ò ¹öÆ° È°¼ºÈ­
         CancelBtn.gameObject.SetActive(m_ConfirmUIData.ConfirmType == ConfirmType.OK_CANCEL); 
     }
-    public void OnClickOKBtn() // í™•ì¸ ë²„íŠ¼ í´ë¦­ ì‹œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
+
+    public void OnClickOKBtn() // È®ÀÎ ¹öÆ° Å¬¸¯ ½Ã È£ÃâµÇ´Â ¸Ş¼­µå
     {
-        m_OnClickOKBtn?.Invoke(); // í™•ì¸ ë²„íŠ¼ í´ë¦­ ì•¡ì…˜ ì‹¤í–‰
-        CloseUI(); // UI ë‹«ê¸°
+        m_OnClickOKBtn?.Invoke(); // È®ÀÎ ¹öÆ° Å¬¸¯ ¾×¼Ç ½ÇÇà
+        CloseUI(); // UI ´İ±â
     }
 
-    public void OnClickCancelBtn() // ì·¨ì†Œ ë²„íŠ¼ í´ë¦­ ì‹œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
+    public void OnClickCancelBtn() // Ãë¼Ò ¹öÆ° Å¬¸¯ ½Ã È£ÃâµÇ´Â ¸Ş¼­µå
     {
-        m_OnClickCancelBtn?.Invoke(); // ì·¨ì†Œ ë²„íŠ¼ í´ë¦­ ì•¡ì…˜ ì‹¤í–‰
-        CloseUI(); // UI ë‹«ê¸°
+        m_OnClickCancelBtn?.Invoke(); // Ãë¼Ò ¹öÆ° Å¬¸¯ ¾×¼Ç ½ÇÇà
+        CloseUI(); // UI ´İ±â
     }
+
 }

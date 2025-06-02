@@ -1,14 +1,14 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 
-// ì‚¬ìš©ì ì¬í™” ë°ì´í„° ê´€ë¦¬ í´ë˜ìŠ¤
+// »ç¿ëÀÚ ÀçÈ­ µ¥ÀÌÅÍ °ü¸® Å¬·¡½º
 public class UserGoodsData : IUserData
 {
-    // ë³´ì„ ìˆ˜ëŸ‰
+    // º¸¼® ¼ö·®
     public long Gem { get; set; }
-    // ê³¨ë“œ ìˆ˜ëŸ‰
+    // °ñµå ¼ö·®
     public long Gold { get; set; }
 
-    // ê¸°ë³¸ê°’ìœ¼ë¡œ ì´ˆê¸°í™”
+    // ±âº»°ªÀ¸·Î ÃÊ±âÈ­
     public void SetDefaultData()
     {
         Logger.Log($"{GetType()}::SetDefaultData");
@@ -17,7 +17,7 @@ public class UserGoodsData : IUserData
         Gold = 0;
     }
 
-    // PlayerPrefsì—ì„œ ë°ì´í„° ë¡œë“œ
+    // PlayerPrefs¿¡¼­ µ¥ÀÌÅÍ ·Îµå
     public bool LoadData()
     {
         Logger.Log($"{GetType()}::LoadData");
@@ -26,7 +26,7 @@ public class UserGoodsData : IUserData
 
         try
         {
-            // ì €ì¥ëœ ì¬í™” ë°ì´í„° ì½ê¸°
+            // ÀúÀåµÈ ÀçÈ­ µ¥ÀÌÅÍ ÀĞ±â
             Gem = long.Parse(PlayerPrefs.GetString("Gem"));
             Gold = long.Parse(PlayerPrefs.GetString("Gold"));
             result = true;
@@ -35,14 +35,14 @@ public class UserGoodsData : IUserData
         }
         catch (System.Exception e)
         {
-            // ë¡œë“œ ì‹¤íŒ¨ ì²˜ë¦¬
+            // ·Îµå ½ÇÆĞ Ã³¸®
             Logger.Log("Load failed (" + e.Message + ")");
         }
 
         return result;
     }
 
-    // PlayerPrefsì— ë°ì´í„° ì €ì¥
+    // PlayerPrefs¿¡ µ¥ÀÌÅÍ ÀúÀå
     public bool SaveData()
     {
         Logger.Log($"{GetType()}::SaveData");
@@ -51,7 +51,7 @@ public class UserGoodsData : IUserData
 
         try
         {
-            // ì¬í™” ë°ì´í„° ì €ì¥
+            // ÀçÈ­ µ¥ÀÌÅÍ ÀúÀå
             PlayerPrefs.SetString("Gem", Gem.ToString());
             PlayerPrefs.SetString("Gold", Gold.ToString());
             PlayerPrefs.Save();
@@ -62,7 +62,7 @@ public class UserGoodsData : IUserData
         }
         catch (System.Exception e)
         {
-            // ì €ì¥ ì‹¤íŒ¨ ì²˜ë¦¬
+            // ÀúÀå ½ÇÆĞ Ã³¸®
             Logger.Log("Save failed (" + e.Message + ")");
         }
 

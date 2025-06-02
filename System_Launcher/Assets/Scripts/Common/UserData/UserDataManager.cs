@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // 사용자 데이터를 관리하는 싱글톤 매니저 클래스
@@ -17,6 +19,7 @@ public class UserDataManager : SingletonBehaviour<UserDataManager>
         // 모든 사용자 데이터를 UserDataList에 추가
         UserDataList.Add(new UserSettingsData());
         UserDataList.Add(new UserGoodsData());
+        UserDataList.Add(new UserInventoryData());
     }
 
     // 모든 사용자 데이터를 기본값으로 설정
@@ -69,4 +72,14 @@ public class UserDataManager : SingletonBehaviour<UserDataManager>
             PlayerPrefs.Save(); // 변경사항을 디스크에 저장
         }
     }
+
+    // 제네릭 타입 T로 특정 사용자 데이터를 조회하는 메서드
+    public T GetUserData<T>() where T : class, IUserData
+    {
+        // UserDataList에서 T 타입에 해당하는 첫 번째 객체를 반환
+        return UserDataList.OfType<T>().FirstOrDefault();
+    }
+
+
+
 }

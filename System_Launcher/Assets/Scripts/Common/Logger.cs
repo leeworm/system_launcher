@@ -1,26 +1,25 @@
-ï»¿using System.Diagnostics;
+using System.Diagnostics;
 
-// ë¡œê¹…ì„ ìœ„í•œ ìœ í‹¸ë¦¬í‹° í´ë˜ìŠ¤
-// 1.ì¶”ê°€ì ì¸ ì •ë³´í‘œí˜„(ex.íƒ€ì„ìŠ¤íƒ¬í”„)
-// 2.ì¶œì‹œìš© ë¹Œë“œë¥¼ ìœ„í•œ ë¡œê·¸ ì œê±°
+// ·Î±ëÀ» À§ÇÑ À¯Æ¿¸®Æ¼ Å¬·¡½º
+// 1. Ãß°¡ÀûÀÎ Á¤º¸ Ç¥Çö (ex.Å¸ÀÓ½ºÅÆÇÁ)
+// 2. Ãâ½Ã¿ë ºôµå¸¦ À§ÇÑ ·Î±× Á¦°Å
 public static class Logger
 {
-    // ì¼ë°˜ ë¡œê·¸ ë©”ì‹œì§€ë¥¼ ì¶œë ¥. DEV_VER ì¡°ê±´ë¶€ ì»´íŒŒì¼ì—ì„œë§Œ ë™ì‘
+    // ÀÏ¹İ ·Î±× ¸Ş½ÃÁö¸¦ Ãâ·Â. DEV_VER Á¶°ÇºÎ ÄÄÆÄÀÏ¿¡¼­¸¸ µ¿ÀÛ
     [Conditional("DEV_VER")]
     public static void Log(string msg)
     {
         UnityEngine.Debug.LogFormat("[{0}] {1}", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), msg);
     }
 
-
-    // ê²½ê³  ë¡œê·¸ ë©”ì‹œì§€ë¥¼ ì¶œë ¥. DEV_VER ì¡°ê±´ë¶€ ì»´íŒŒì¼ì—ì„œë§Œ ë™ì‘
+    // °æ°í ·Î±× ¸Ş½ÃÁö¸¦ Ãâ·Â. DEV_VER Á¶°ÇºÎ ÄÄÆÄÀÏ¿¡¼­¸¸ µ¿ÀÛ 
     [Conditional("DEV_VER")]
     public static void LogWarning(string msg)
     {
         UnityEngine.Debug.LogWarningFormat("[{0}] {1}", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), msg);
     }
 
-    // ì—ëŸ¬ ë¡œê·¸ ë©”ì‹œì§€ë¥¼ ì¶œë ¥. í•­ìƒ ë™ì‘
+    // ¿¡·¯ ·Î±× ¸Ş½ÃÁö¸¦ Ãâ·Â. Ç×»ó µ¿ÀÛ
     public static void LogError(string msg)
     {
         UnityEngine.Debug.LogErrorFormat("[{0}] {1}", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), msg);

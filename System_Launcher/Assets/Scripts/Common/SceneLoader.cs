@@ -1,15 +1,18 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// ¾À Á¾·ù¸¦ Á¤ÀÇÇÏ´Â ¿­°ÅÇü
 public enum SceneType
 {
-    Title,
-    Lobby,
-    InGame
+    Title,  // Å¸ÀÌÆ² È­¸é
+    Lobby,  // ·Îºñ È­¸é
+    InGame, // °ÔÀÓ È­¸é
 }
+
+// ¾À ÀüÈ¯À» °ü¸®ÇÏ´Â ½Ì±ÛÅæ Å¬·¡½º
 public class SceneLoader : SingletonBehaviour<SceneLoader>
 {
-    // ì§€ì •ëœ ì”¬ìœ¼ë¡œ ì „í™˜í•˜ëŠ” ë©”ì„œë“œ
+    // ÁöÁ¤µÈ ¾ÀÀ¸·Î ÀüÈ¯ÇÏ´Â ¸Ş¼­µå
     public void LoadScene(SceneType sceneType)
     {
         Logger.Log($"{sceneType} scene loading...");
@@ -17,7 +20,8 @@ public class SceneLoader : SingletonBehaviour<SceneLoader>
         Time.timeScale = 1f;
         SceneManager.LoadScene(sceneType.ToString());
     }
-    // í˜„ì¬ ì”¬ì„ ë‹¤ì‹œ ë¡œë“œí•˜ëŠ” ë©”ì„œë“œ
+
+    // ÇöÀç ¾ÀÀ» ´Ù½Ã ·ÎµåÇÏ´Â ¸Ş¼­µå
     public void ReloadScene()
     {
         Logger.Log($"{SceneManager.GetActiveScene().name} scene loading...");
@@ -28,10 +32,13 @@ public class SceneLoader : SingletonBehaviour<SceneLoader>
 
     public AsyncOperation LoadSceneAsync(SceneType sceneType)
     {
-        Logger.Log($"{sceneType} scene async loading");
+        Logger.Log($"{sceneType} scene async loading...");
 
         Time.timeScale = 1f;
 
         return SceneManager.LoadSceneAsync(sceneType.ToString());
     }
+
+
+
 }

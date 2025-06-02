@@ -1,14 +1,57 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
-public class UIManager : SingletonBehaviour<UIManager>
+public class UIManager : SingletonBehaviour<UIManager> // 싱글톤 패턴을 상속받는 UI 관리자 클래스
 {
+    private Camera uiCamera;
     public Transform UICanvasTrs; // UI 캔버스 Transform
     public Transform ClosedUITrs; // 닫힌 UI를 보관할 Transform
 
     private BaseUI m_FrontUI; // 현재 가장 앞에 있는 UI
     private Dictionary<System.Type, GameObject> m_OpenUIPool = new Dictionary<System.Type, GameObject>(); // 열린 UI들을 저장하는 딕셔너리
     private Dictionary<System.Type, GameObject> m_ClosedUIPool = new Dictionary<System.Type, GameObject>(); // 닫힌 UI들을 저장하는 딕셔너리
+    
+    // 재화 UI 컴포넌트
+    private GoodsUI m_StatsUI;
+
+
+    protected override void Init()
+    {
+        base.Init();
+
+        if (uiCamera == null)
+        {
+            uiCamera = GameObject.Find("UICamera")?.GetComponent<Camera>();
+            if (uiCamera == null)
+                Debug.LogError("[UIManager] UICamera not found!");
+        }
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // 씬에서 GoodsUI 컴포넌트 찾기
+        m_StatsUI = FindAnyObjectByType<GoodsUI>();
+        // GoodsUI를 찾지 못했을 때
+        if (!m_StatsUI)
+        {
+            // 로그 출력
+            Logger.Log("No stats ui component found.");
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+            return;
+
+        var mainCamData = mainCamera.GetUniversalAdditionalCameraData();
+
+        if (!mainCamData.cameraStack.Contains(uiCamera))
+            mainCamData.cameraStack.Add(uiCamera);
+
+    }
 
     private BaseUI GetUI<T>(out bool isAlreadyOpen) // 제네릭 타입으로 UI를 가져오는 메서드
     {
@@ -35,6 +78,8 @@ public class UIManager : SingletonBehaviour<UIManager>
 
         return ui; // UI 컴포넌트 반환
     }
+
+
     public void OpenUI<T>(BaseUIData uiData) // 제네릭 타입으로 UI를 여는 메서드
     {
         System.Type uiType = typeof(T); // 제네릭 타입을 System.Type으로 변환
@@ -56,7 +101,7 @@ public class UIManager : SingletonBehaviour<UIManager>
             return; // 메서드 종료
         }
 
-        var siblingIdx = UICanvasTrs.childCount; // UI 캔버스의 자식 개수를 형제 인덱스로 설정
+        var siblingIdx = UICanvasTrs.childCount -1; // UI 캔버스의 자식 개수를 형제 인덱스로 설정
         ui.Init(UICanvasTrs); // UI 초기화
         ui.transform.SetSiblingIndex(siblingIdx); // UI의 형제 인덱스 설정
         ui.gameObject.SetActive(true); // UI 게임오브젝트 활성화
@@ -89,7 +134,8 @@ public class UIManager : SingletonBehaviour<UIManager>
     public BaseUI GetActiveUI<T>() // 제네릭 타입으로 활성 UI를 가져오는 메서드
     {
         var uiType = typeof(T); // 제네릭 타입을 System.Type으로 변환
-        return m_OpenUIPool.ContainsKey(uiType) ? m_OpenUIPool[uiType].GetComponent<BaseUI>() : null; // 열린 UI 풀에 있으면 UI 컴포넌트 반환, 없으면 null 반환
+        return m_OpenUIPool.ContainsKey(uiType) ? m_OpenUIPool[uiType].GetComponent<BaseUI>() : null; 
+        // 열린 UI 풀에 있으면 UI 컴포넌트 반환, 없으면 null 반환
     }
 
     public bool ExistsOpenUI() // 열린 UI가 존재하는지 확인하는 메서드
@@ -114,4 +160,19 @@ public class UIManager : SingletonBehaviour<UIManager>
             m_FrontUI.CloseUI(true); // 가장 앞의 UI 닫기 (전체 닫기 모드)
         }
     }
+
+    // 재화 UI 활성화/비활성화
+    public void EnableStatsUI(bool value)
+    {
+        // 재화 UI 게임오브젝트 활성화 상태 설정
+        m_StatsUI.gameObject.SetActive(value);
+
+        // 활성화하는 경우
+        if (value)
+        {
+            // 재화 값들 설정
+            m_StatsUI.SetValues();
+        }
+    }
+
 }

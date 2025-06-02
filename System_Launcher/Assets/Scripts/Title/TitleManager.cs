@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,6 +44,9 @@ public class TitleManager : MonoBehaviour
         //confirmUIData.CancelBtnTxt = "취소";
         //UIManager.Instance.OpenUI<ConfirmUI>(confirmUIData);
 
+        AudioManager.Instance.OnLoadUserData();
+
+        UIManager.Instance.EnableStatsUI(true);
 
         StartCoroutine(LoadGameCo());
     }
@@ -52,7 +54,13 @@ public class TitleManager : MonoBehaviour
     private IEnumerator LoadGameCo()
     {
         Logger.Log($"{GetType()}::LoadGameCo");
+
+
         
+
+
+
+
         LogoAnim.Play();
         yield return new WaitForSeconds(LogoAnim.clip.length);
 

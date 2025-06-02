@@ -1,11 +1,11 @@
-ï»¿using UnityEngine;
-// ì‚¬ìš©ì ë°ì´í„° ì¸í„°í˜ì´ìŠ¤
+using UnityEngine;
+// »ç¿ëÀÚ µ¥ÀÌÅÍ ÀÎÅÍÆäÀÌ½º
 public interface IUserData
 {
-    // ê¸°ë³¸ê°’ìœ¼ë¡œ ë°ì´í„° ì´ˆê¸°í™”
+    // ±âº»°ªÀ¸·Î µ¥ÀÌÅÍ ÃÊ±âÈ­
     void SetDefaultData();
-    // ë°ì´í„° ë¡œë“œ
+    // µ¥ÀÌÅÍ ·Îµå
     bool LoadData();
-    // ë°ì´í„° ì €ì¥
+    // µ¥ÀÌÅÍ ÀúÀå
     bool SaveData();
 }

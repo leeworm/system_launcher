@@ -1,4 +1,4 @@
-﻿// System.Collections 네임스페이스 사용
+// System.Collections 네임스페이스 사용
 using System.Collections;
 // System.Collections.Generic 네임스페이스 사용
 using System.Collections.Generic;
