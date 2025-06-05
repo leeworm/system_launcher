@@ -44,6 +44,8 @@ public class DataTableManager : SingletonBehaviour<DataTableManager>
             {
                 // 챕터 번호 설정
                 ChapterNo = Convert.ToInt32(data["chapter_no"]),
+                // 챕터 이름 설정
+                ChapterName = data["chapter_name"].ToString(),
                 // 총 스테이지 수 설정
                 TotalStage = Convert.ToInt32(data["total_stages"]),
                 // 챕터 보상 젬 설정
@@ -115,6 +117,8 @@ public class ChapterData
 {
     // 챕터 번호
     public int ChapterNo;
+    // 챕터 이름
+    public string ChapterName;
     // 총 스테이지 수
     public int TotalStage;
     // 챕터 보상 젬
