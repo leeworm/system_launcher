@@ -1,47 +1,287 @@
-﻿// GPM UI 네임스페이스 사용
-using Gpm.Ui;
-// TextMeshPro 네임스페이스 사용
+﻿using Gpm.Ui;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
-// 인벤토리 UI 클래스 (BaseUI 상속)
+public enum InventorySortType
+{
+    ItemGrade,
+    ItemType,
+}
+
 public class InventoryUI : BaseUI
 {
-    // 인벤토리 스크롤 리스트 컴포넌트
-    public InfiniteScroll InventoryScrollList;
+    public EquippedItemSlot WeaponSlot;
+    public EquippedItemSlot ShieldSlot;
+    public EquippedItemSlot ChestArmorSlot;
+    public EquippedItemSlot BootsSlot;
+    public EquippedItemSlot GlovesSlot;
+    public EquippedItemSlot AccessorySlot;
 
-    // UI 정보 설정 메서드 (부모 클래스 오버라이드)
+    public InfiniteScroll InventoryScrollList;
+    public TextMeshProUGUI SortBtnTxt;
+
+    public TextMeshProUGUI AttackPowerAmountTxt;
+    public TextMeshProUGUI DefenseAmountTxt;
+
+    private InventorySortType m_InventorySortType = InventorySortType.ItemGrade;
+
     public override void SetInfo(BaseUIData uiData)
     {
-        // 부모 클래스의 SetInfo 호출
         base.SetInfo(uiData);
 
-        // 인벤토리 설정 메서드 호출
+        SetUserStats();
+        SetEquippedItems();
         SetInventory();
+        SortInventory();
     }
 
-    // 인벤토리 설정 메서드
+    private void SetUserStats()
+    {
+        var userInventoryData = UserDataManager.Instance.GetUserData<UserInventoryData>();
+        if (userInventoryData == null)
+        {
+            Logger.LogError("UserInventoryData does not exist.");
+            return;
+        }
+
+        var userTotalItemStats = userInventoryData.GetUserTotalItemStats();
+        AttackPowerAmountTxt.text = $"+{userTotalItemStats.AttackPower.ToString("N0")}";
+        DefenseAmountTxt.text = $"+{userTotalItemStats.Defense.ToString("N0")}";
+    }
+
+    private void SetEquippedItems()
+    {
+        var userInventoryData = UserDataManager.Instance.GetUserData<UserInventoryData>();
+        if (userInventoryData == null)
+        {
+            Logger.LogError("UserInventoryData does not exist.");
+            return;
+        }
+
+        if (userInventoryData.EquippedWeaponData != null)
+        {
+            WeaponSlot.SetItem(userInventoryData.EquippedWeaponData);
+        }
+        else
+        {
+            WeaponSlot.ClearItem();
+        }
+
+        if (userInventoryData.EquippedShieldData != null)
+        {
+            ShieldSlot.SetItem(userInventoryData.EquippedShieldData);
+        }
+        else
+        {
+            ShieldSlot.ClearItem();
+        }
+
+        if (userInventoryData.EquippedChestArmorData != null)
+        {
+            ChestArmorSlot.SetItem(userInventoryData.EquippedChestArmorData);
+        }
+        else
+        {
+            ChestArmorSlot.ClearItem();
+        }
+
+        if (userInventoryData.EquippedBootsData != null)
+        {
+            BootsSlot.SetItem(userInventoryData.EquippedBootsData);
+        }
+        else
+        {
+            BootsSlot.ClearItem();
+        }
+
+        if (userInventoryData.EquippedGlovesData != null)
+        {
+            GlovesSlot.SetItem(userInventoryData.EquippedGlovesData);
+        }
+        else
+        {
+            GlovesSlot.ClearItem();
+        }
+
+        if (userInventoryData.EquippedAccessoryData != null)
+        {
+            AccessorySlot.SetItem(userInventoryData.EquippedAccessoryData);
+        }
+        else
+        {
+            AccessorySlot.ClearItem();
+        }
+    }
+
     private void SetInventory()
     {
-        // 인벤토리 스크롤 리스트 초기화
         InventoryScrollList.Clear();
 
-        // 유저 인벤토리 데이터 가져오기
         var userInventoryData = UserDataManager.Instance.GetUserData<UserInventoryData>();
-        // 유저 인벤토리 데이터가 존재하는 경우
         if (userInventoryData != null)
         {
-            // 인벤토리 아이템 데이터 리스트 순회
             foreach (var itemData in userInventoryData.InventoryItemDataList)
             {
-                // 아이템 슬롯 데이터 객체 생성
+                if (userInventoryData.IsEquipped(itemData.SerialNumber))
+                {
+                    continue;
+                }
+
                 var itemSlotData = new InventoryItemSlotData();
-                // 시리얼 번호 설정
                 itemSlotData.SerialNumber = itemData.SerialNumber;
-                // 아이템 ID 설정
                 itemSlotData.ItemId = itemData.ItemId;
-                // 스크롤 리스트에 아이템 데이터 추가
                 InventoryScrollList.InsertData(itemSlotData);
             }
         }
+    }
+
+    private void SortInventory()
+    {
+        switch (m_InventorySortType)
+        {
+            case InventorySortType.ItemGrade:
+                SortBtnTxt.text = "등급별";
+
+                InventoryScrollList.SortDataList((a, b) =>
+                {
+                    var itemA = a.data as InventoryItemSlotData;
+                    var itemB = b.data as InventoryItemSlotData;
+
+                    //sort by item grade
+                    int compareResult = ((itemB.ItemId / 1000) % 10).CompareTo((itemA.ItemId / 1000) % 10);
+
+                    //if same item grade, sort by item type
+                    if (compareResult == 0)
+                    {
+                        var itemAIdStr = itemA.ItemId.ToString();
+                        var itemAComp = itemAIdStr.Substring(0, 1) + itemAIdStr.Substring(2, 3); //11001 -> 1001
+
+                        var itemBIdStr = itemB.ItemId.ToString();
+                        var itemBComp = itemBIdStr.Substring(0, 1) + itemBIdStr.Substring(2, 3); //11001 -> 1001
+
+                        compareResult = itemAComp.CompareTo(itemBComp);
+                    }
+
+                    return compareResult;
+                });
+                break;
+            case InventorySortType.ItemType:
+                SortBtnTxt.text = "타입별";
+                InventoryScrollList.SortDataList((a, b) =>
+                {
+                    var itemA = a.data as InventoryItemSlotData;
+                    var itemB = b.data as InventoryItemSlotData;
+
+                    //sort by item type
+                    var itemAIdStr = itemA.ItemId.ToString();
+                    var itemAComp = itemAIdStr.Substring(0, 1) + itemAIdStr.Substring(2, 3); //11001 -> 1001
+
+                    var itemBIdStr = itemB.ItemId.ToString();
+                    var itemBComp = itemBIdStr.Substring(0, 1) + itemBIdStr.Substring(2, 3); //11001 -> 1001
+
+                    int compareResult = itemAComp.CompareTo(itemBComp);
+
+                    //if same item type, sort by item grade
+                    if (compareResult == 0)
+                    {
+                        compareResult = ((itemB.ItemId / 1000) % 10).CompareTo((itemA.ItemId / 1000) % 10);
+                    }
+
+                    return compareResult;
+                });
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void OnClickSortBtn()
+    {
+        switch (m_InventorySortType)
+        {
+            case InventorySortType.ItemGrade:
+                m_InventorySortType = InventorySortType.ItemType;
+                break;
+            case InventorySortType.ItemType:
+                m_InventorySortType = InventorySortType.ItemGrade;
+                break;
+            default:
+                break;
+        }
+
+        SortInventory();
+    }
+
+    public void OnEquipItem(int itemId)
+    {
+        var userInventoryData = UserDataManager.Instance.GetUserData<UserInventoryData>();
+        if (userInventoryData == null)
+        {
+            Logger.LogError("UserInventoryData does not exist.");
+            return;
+        }
+
+        var itemType = (ItemType)(itemId / 10000);
+        switch (itemType)
+        {
+            case ItemType.Weapon:
+                WeaponSlot.SetItem(userInventoryData.EquippedWeaponData);
+                break;
+            case ItemType.Shield:
+                ShieldSlot.SetItem(userInventoryData.EquippedShieldData);
+                break;
+            case ItemType.ChestArmor:
+                ChestArmorSlot.SetItem(userInventoryData.EquippedChestArmorData);
+                break;
+            case ItemType.Gloves:
+                GlovesSlot.SetItem(userInventoryData.EquippedGlovesData);
+                break;
+            case ItemType.Boots:
+                BootsSlot.SetItem(userInventoryData.EquippedBootsData);
+                break;
+            case ItemType.Accessory:
+                AccessorySlot.SetItem(userInventoryData.EquippedAccessoryData);
+                break;
+            default:
+                break;
+        }
+
+        SetUserStats();
+        SetInventory();
+        SortInventory();
+    }
+
+    public void OnUnequipItem(int itemId)
+    {
+        var itemType = (ItemType)(itemId / 10000);
+        switch (itemType)
+        {
+            case ItemType.Weapon:
+                WeaponSlot.ClearItem();
+                break;
+            case ItemType.Shield:
+                ShieldSlot.ClearItem();
+                break;
+            case ItemType.ChestArmor:
+                ChestArmorSlot.ClearItem();
+                break;
+            case ItemType.Gloves:
+                GlovesSlot.ClearItem();
+                break;
+            case ItemType.Boots:
+                BootsSlot.ClearItem();
+                break;
+            case ItemType.Accessory:
+                AccessorySlot.ClearItem();
+                break;
+            default:
+                break;
+        }
+
+        SetUserStats();
+        SetInventory();
+        SortInventory();
     }
 }

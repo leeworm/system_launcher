@@ -41,13 +41,13 @@ public class LobbyUIController : MonoBehaviour
                 // 확인 창 타입을 OK/Cancel로 설정
                 uiData.ConfirmType = ConfirmType.OK_CANCEL;
                 // 제목 텍스트 설정
-                uiData.TitleTxt = "Quit";
+                uiData.TitleTxt = "종료";
                 // 설명 텍스트 설정
-                uiData.DescTxt = "Do you want to quit game?";
+                uiData.DescTxt = "게임을 종료하시겠습니까?";
                 // OK 버튼 텍스트 설정
-                uiData.OKBtnTxt = "Quit";
+                uiData.OKBtnTxt = "종료";
                 // Cancel 버튼 텍스트 설정
-                uiData.CancelBtnTxt = "Cancel";
+                uiData.CancelBtnTxt = "취소";
                 // OK 버튼 클릭 시 실행할 액션 설정
                 uiData.OnClickOKBtn = () =>
                 {
