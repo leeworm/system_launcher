@@ -11,7 +11,7 @@ public class LobbyUIController : MonoBehaviour
     // 초기화 메서드
     public void Init()
     {
-        UIManager.Instance.EnableStatsUI(true);
+        UIManager.Instance.EnableGoodsUI(true);
         SetCurrChapter();
     }
     public void SetCurrChapter()
@@ -115,5 +115,14 @@ public class LobbyUIController : MonoBehaviour
 
         var uiData = new BaseUIData();
         UIManager.Instance.OpenUI<ChapterListUI>(uiData);
+    }
+
+    public void OnClickStartBtn()
+    {
+        Logger.Log($"{GetType()}::OnClickStartBtn");
+
+        AudioManager.Instance.PlaySFX(SFX.ui_button_click);
+        AudioManager.Instance.StopBGM();
+        LobbyManager.Instance.StartInGame();
     }
 }
